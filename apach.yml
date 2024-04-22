@@ -1,0 +1,40 @@
+---
+
+- name: installing lamp stack and php application
+  hosts: 192.168.56.4
+  become: true
+  tasks:
+    - name: execute file with all permission
+      ansible.builtin.copy:
+              src: /home/vagrant/first.sh
+              dest: /home/vagrant/first.sh
+              owner: root
+              group: root
+              mode: '0755'
+
+    - name: install Python
+      apt:
+        name: python3
+        state: present
+        update_cache: yes
+
+    - name: Install software-properties-common
+      apt:
+        name: software-properties-common
+        state: present
+        update_cache: yes
+
+    - name: Add Ansible PPA repository
+      apt_repository:
+        repo: ppa:ansible/ansible
+        state: present
+        update_cache: yes
+
+    - name: Install Ansible
+      apt:
+        name: ansible
+        state: present
+        update_cache: yes
+
+    - name: install and run the cloned php application
+      script: /home/vagrant/first.sh
