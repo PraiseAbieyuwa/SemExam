@@ -119,4 +119,40 @@ sudo a2dissite 000-default.conf
 sudo systemctl reload apache2
 sudo systemctl restart apache2
 
+# Install MySQL Server and Client
+sudo apt install mysql-server -y
+sudo apt install mysql-client -y
 
+# Start MySQL Service
+sudo systemctl start mysql
+
+# Create MySQL Database and User
+sudo mysql -uroot -e "CREATE DATABASE Alohan;"
+sudo mysql -uroot -e "CREATE USER 'praise'@'localhost' IDENTIFIED BY 'cardoso';"
+sudo mysql -uroot -e "GRANT ALL PRIVILEGES ON Alohan.* TO 'praise'@'localhost';"
+
+# Navigate to Laravel Directory
+cd /var/www/laravel
+
+# Update Laravel .env File
+sudo sed -i "s/# DB_CONNECTION=mysql/DB_CONNECTION=mysql/" .env
+sudo sed -i "s/# DB_HOST=127.0.0.1/DB_HOST=localhost/" .env
+sudo sed -i "s/# DB_PORT=3306/DB_PORT=3306/" .env
+sudo sed -i "s/# DB_DATABASE=laravel/DB_DATABASE=Alohan/" .env
+sudo sed -i "s/# DB_USERNAME=root/DB_USERNAME=praise/" .env
+sudo sed -i "s/# DB_PASSWORD=/DB_PASSWORD=cardoso/" .env
+
+# Generate Laravel Application Key
+sudo php artisan key:generate
+
+# Create Storage Link
+sudo php artisan storage:link
+
+# Run Database Migrations
+sudo php artisan migrate
+
+# Seed Database
+sudo php artisan db:seed
+
+# Restart Apache
+sudo systemctl restart apache2
